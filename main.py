@@ -18,7 +18,7 @@ def getTimeString():
     '''returns current time in %H:%M:%S Format'''
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-    timestring = "Time = " + current_time
+    timestring = f"Time: {current_time}"
     return(timestring)
 
 def Reformat_Image(ImageFilePath):
@@ -34,7 +34,7 @@ def Reformat_Image(ImageFilePath):
         offset = (int(round(((bigside - width) / 2), 0)), int(round(((bigside - height) / 2),0)))
         background.paste(image, offset)
         background.save('int.png')
-        print(getTimeString() , " Image has been resized !")
+        print(f"{getTimeString()} Image has been resized !")
     else:
         print("Image is already a square, it has not been resized !")
 
@@ -132,7 +132,7 @@ while True:
 
                 #caption
                 s = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/textarea")
-                s.send_keys('' + title + "\n \n \n  " + makeTrendingHashtagString()) #interesting #fact #wow #photography #facts #love #fun #didyouknow #beautiful #instagood #science #amazing #instafacts #art #dailyfacts #travel #scientist #followforfollow #likeforlike #knowledge #nature #factsdaily #allfacts #photooftheday #life #daily #cool #dailyfact #picoftheday 
+                s.send_keys('' + title + "\n \n \n  " + makeTrendingHashtagString()) 
                 time.sleep(4)
 
                 #publish
