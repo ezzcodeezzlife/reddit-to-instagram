@@ -151,5 +151,6 @@ while True:
                 time.sleep(60*60*2) #every 2h 
 
         except Exception as E:
+            login = False
             print(E)
             break 
