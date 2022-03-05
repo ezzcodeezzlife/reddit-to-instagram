@@ -15,14 +15,16 @@ import pyautogui
 from PIL import Image
 
 def getTimeString():
-    '''returns current time in %H:%M:%S Format'''
+    from datetime import datetime
+
     now = datetime.now()
+
     current_time = now.strftime("%H:%M:%S")
-    timestring = f"Time: {current_time}"
+    timestring = "Time = " + current_time
     return(timestring)
 
+
 def Reformat_Image(ImageFilePath):
-    '''Takes in an image file path and formats it to 1:1 aspect ratio with white bars'''
     image = Image.open(ImageFilePath, 'r')
     image_size = image.size
     width = image_size[0]
@@ -30,24 +32,34 @@ def Reformat_Image(ImageFilePath):
 
     if(width != height):
         bigside = width if width > height else height
+
         background = Image.new('RGBA', (bigside, bigside), (0, 0, 0, 255)) #white
         offset = (int(round(((bigside - width) / 2), 0)), int(round(((bigside - height) / 2),0)))
+
         background.paste(image, offset)
         background.save('int.png')
-        print(f"{getTimeString()} Image has been resized !")
+        print(getTimeString() , " Image has been resized !")
+
     else:
         print("Image is already a square, it has not been resized !")
 
 def makeTrendingHashtagString():
-    '''Returns a string with current trending hashtags'''
     try:
         response = requests.get('https://api.ritekit.com/v1/search/trending?green=1&latin=1')
-        print("trendingHashtagString API Call:" , response) # print response code
+
+        # print response code
+        print("trendingHashtagString API Call:" , response)
+
         jsonresponse = response.json()
-        
+
+        # print response code
+        #print(jsonresponse["tags"])
         trendingHashtagString = ""
+
         for tag in jsonresponse["tags"]:
+            #print(tag["tag"])
             trendingHashtagString += "#" + tag["tag"] + " "
+
         return trendingHashtagString
 
     except Exception as Exc: 
@@ -65,20 +77,21 @@ while True:
 
         driver.get("https://www.instagram.com")
         time.sleep(5)
-        
-        s = driver.find_element_by_xpath("/html/body/div[4]/div/div/button[1]") #login
+        #login
+
+        s = driver.find_element_by_xpath("/html/body/div[4]/div/div/button[1]")
         s.click()
 
         time.sleep(6)
 
-        elem = driver.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input') #accountname
+        elem = driver.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input')
         elem.send_keys(accountname)
         time.sleep(9)
-        elem = driver.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input') #password
+        elem = driver.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input')
         elem.send_keys(password)
         time.sleep(9)
 
-        s = driver.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button') #login
+        s = driver.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button')
         s.click()
 
         loggedIn = True
@@ -91,24 +104,28 @@ while True:
     while loggedIn:
         try:
             #get meme
-            response = requests.get('https://meme-api.herokuapp.com/gimme/' + subreddit)
+            response = requests.get('https://meme-api.herokuapp.com/gimme/interestingasfuck')
             
             # print response code
             print(getTimeString() , " Meme Api Call: " , response)
 
             jsonresponse = response.json()
+            #print(jsonresponse)
+
             url = jsonresponse["url"]
             print("Meme URL" , url)
             title = jsonresponse["title"]
             if(url[-3:] == "jpg" or url[-3:] == "png"):
-        
+            
                 urllib.request.urlretrieve(url, "int.png")
 
+                #reformat to 1:1 aspect ratio with white bars
                 time.sleep(5)
                 Reformat_Image("int.png")
                 time.sleep(3)
+
                 
-                #upload new post
+                #webupload
                 time.sleep(10)
                 button = driver.find_element_by_xpath('//*[@id="react-root"]/section/nav/div[2]/div/div/div[3]/div/div[3]/div/button')
                 button.click()
@@ -124,22 +141,26 @@ while True:
 
                 s = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div/div/div/div[1]/div/div/div[2]/div/button")
                 s.click()
+
                 time.sleep(3)
 
                 s = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div/div/div/div[1]/div/div/div[2]/div/button")
                 s.click()
+
                 time.sleep(2)
 
                 #caption
                 s = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[1]/textarea")
-                s.send_keys('' + title + "\n \n \n  " + makeTrendingHashtagString()) 
+                s.send_keys('ℹ️ ' + title + ' ℹ️' + "\n \n \n #️⃣ #interesting #fact #wow #photography #facts #love #fun #didyouknow #beautiful #instagood #science #amazing #instafacts #art #dailyfacts #travel #scientist #followforfollow #likeforlike #knowledge #nature #factsdaily #allfacts #photooftheday #life #daily #cool #dailyfact #picoftheday #followforfollow #likeforlike #️⃣ \n \n \n for more: @daily.interesting.stuff" ) # add makeTrendingHashtagString() if you want
+                
                 time.sleep(4)
 
-                #publish
+
                 s = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div/div/div/div[1]/div/div/div[2]/div/button")
                 s.click()
                 print(getTimeString() , "UPLOADED IMG")
         
+
                 #delete file
                 time.sleep(15)
                 os.remove("int.png")
@@ -147,10 +168,18 @@ while True:
 
                 time.sleep(3)   
                 driver.refresh()
+
                 
-                time.sleep(60*60*2) #every 2h 
+                time.sleep(60*30 ) 
+
+                print("refresh")
+                time.sleep(3)   
+                driver.refresh()
+
+                time.sleep(60*30) 
+                
+                driver.refresh()
 
         except Exception as E:
-            loggedIn = False
             print(E)
-            break 
+            break
