@@ -52,12 +52,8 @@ def makeTrendingHashtagString():
 
         jsonresponse = response.json()
 
-        # print response code
-        #print(jsonresponse["tags"])
         trendingHashtagString = ""
-
         for tag in jsonresponse["tags"]:
-            #print(tag["tag"])
             trendingHashtagString += "#" + tag["tag"] + " "
 
         return trendingHashtagString
@@ -77,8 +73,8 @@ while True:
 
         driver.get("https://www.instagram.com")
         time.sleep(5)
+        
         #login
-
         s = driver.find_element_by_xpath("/html/body/div[4]/div/div/button[1]")
         s.click()
 
@@ -110,7 +106,6 @@ while True:
             print(getTimeString() , " Meme Api Call: " , response)
 
             jsonresponse = response.json()
-            #print(jsonresponse)
 
             url = jsonresponse["url"]
             print("Meme URL" , url)
@@ -124,7 +119,6 @@ while True:
                 Reformat_Image("int.png")
                 time.sleep(3)
 
-                
                 #webupload
                 time.sleep(10)
                 button = driver.find_element_by_xpath('//*[@id="react-root"]/section/nav/div[2]/div/div/div[3]/div/div[3]/div/button')
@@ -155,12 +149,10 @@ while True:
                 
                 time.sleep(4)
 
-
                 s = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div/div/div/div[1]/div/div/div[2]/div/button")
                 s.click()
                 print(getTimeString() , "UPLOADED IMG")
         
-
                 #delete file
                 time.sleep(15)
                 os.remove("int.png")
@@ -168,7 +160,6 @@ while True:
 
                 time.sleep(3)   
                 driver.refresh()
-
                 
                 time.sleep(60*30 ) 
 
